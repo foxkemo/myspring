@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>文章详情</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f7f7f7;
+        }
+
+        .article-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .comment-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .comment {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 6px 12px;
+            border: none;
+            background: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .comment-form input, .comment-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .comment-form button {
+            padding: 8px 16px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="article-card" id="article">
+    <h2>文章标题示例</h2>
+    <img src=""></img>
+    <p>这里显示文章的内容。这是文章的正文部分，用于展示文章信息。</p>
+</div>
+
+<div class="comment-section">
+    <h3>评论</h3>
+
+    <!-- 评论列表 -->
+    <div id="commentList"></div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+        <button id="prevComment">上一页</button>
+        <span id="commentPageInfo"></span>
+        <button id="nextComment">下一页</button>
+    </div>
+
+    <!-- 评论发表表单 -->
+    <div class="comment-form">
+        <input type="text" id="username" placeholder="你的昵称">
+        <textarea id="commentContent" rows="3" placeholder="写下你的评论..."></textarea>
+        <button id="submitComment">发表评论</button>
+    </div>
+</div>
+
+<script>
+    // 模拟评论数据
+    let comments = [
+        {username: "张三", content: "不错的文章！"},
+        {username: "李四", content: "我学到了很多。"},
+        {username: "王五", content: "赞👍"},
+        {username: "赵六", content: "继续更新吧！"},
+        {username: "小明", content: "写得真好！"},
+        {username: "小红", content: "我收藏了。"},
+        {username: "小李", content: "不错不错。"},
+        {username: "小赵", content: "有帮助！"},
+    ];
+
+    const pageSize = 3; // 每页显示评论数
+    let currentCommentPage = 1;
+
+    const commentList = document.getElementById("commentList");
+    const prevComment = document.getElementById("prevComment");
+    const nextComment = document.getElementById("nextComment");
+    const commentPageInfo = document.getElementById("commentPageInfo");
+
+    function renderComments() {
+        commentList.innerHTML = "";
+        const start = (currentCommentPage - 1) * pageSize;
+        const end = start + pageSize;
+        const pageComments = comments.slice(start, end);
+
+        pageComments.forEach(c => {
+            const div = document.createElement("div");
+            div.className = "comment";
+            div.innerHTML = `<strong>${c.username}</strong>: ${c.content}`;
+            commentList.appendChild(div);
+        });
+
+        commentPageInfo.textContent = `第 ${currentCommentPage} 页 / 共 ${Math.ceil(comments.length / pageSize)} 页`;
+        prevComment.disabled = currentCommentPage === 1;
+        nextComment.disabled = currentCommentPage === Math.ceil(comments.length / pageSize);
+    }
+
+    prevComment.addEventListener("click", () => {
+        if (currentCommentPage > 1) {
+            currentCommentPage--;
+            renderComments();
+        }
+    });
+
+    nextComment.addEventListener("click", () => {
+        if (currentCommentPage < Math.ceil(comments.length / pageSize)) {
+            currentCommentPage++;
+            renderComments();
+        }
+    });
+
+    // 提交评论
+    document.getElementById("submitComment").addEventListener("click", () => {
+        const username = document.getElementById("username").value.trim();
+        const content = document.getElementById("commentContent").value.trim();
+        if (!username || !content) {
+            alert("昵称和评论内容不能为空！");
+            return;
+        }
+
+        comments.push({username, content});
+        document.getElementById("username").value = "";
+        document.getElementById("commentContent").value = "";
+
+        // 跳到最后一页显示新评论
+        currentCommentPage = Math.ceil(comments.length / pageSize);
+        renderComments();
+    });
+
+    // 初始化
+    renderComments();
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>文章发表</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header {
+            background: #2c3e50;
+            color: #fff;
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            width: 700px;  /* 固定宽度 */
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .success-msg {
+            margin-top: 15px;
+            color: #28a745;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>文章发表系统</header>
+
+<div class="container">
+    <h2>发表新文章</h2>
+    <form id="articleForm">
+        <label for="title">文章标题</label>
+        <input type="text" id="title" placeholder="请输入文章标题" required>
+
+        <label for="category">分类</label>
+        <select id="category">
+            <option value="">请选择分类</option>
+            <option value="技术">技术</option>
+            <option value="生活">生活</option>
+            <option value="教程">教程</option>
+            <option value="随笔">随笔</option>
+        </select>
+
+        <label for="content">文章内容</label>
+        <textarea id="content" placeholder="请输入文章内容..." required></textarea>
+
+        <button type="submit">发表文章</button>
+        <div class="success-msg" id="successMsg">文章发表成功！</div>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById("articleForm");
+    const successMsg = document.getElementById("successMsg");
+
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        const title = document.getElementById("title").value.trim();
+        const category = document.getElementById("category").value;
+        const content = document.getElementById("content").value.trim();
+
+        if (!title || !content) {
+            alert("标题和内容不能为空！");
+            return;
+        }
+
+        // 模拟提交到后端
+        console.log({title, category, content});
+
+        successMsg.style.display = "block";
+
+        // 清空表单
+        form.reset();
+
+        // 3秒后隐藏提示
+        setTimeout(() => {
+            successMsg.style.display = "none";
+        }, 3000);
+    });
+</script>
+
+</body>
+</html>
