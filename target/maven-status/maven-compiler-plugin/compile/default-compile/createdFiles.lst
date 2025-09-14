@@ -7,6 +7,7 @@ org\unomi\myspring\MyspringApplication.class
 org\unomi\myspring\entity\Article.class
 org\unomi\myspring\controller\CommentController.class
 org\unomi\myspring\mapper\CommentMapper.class
+org\unomi\myspring\config\SessionConfig.class
 org\unomi\myspring\controller\ArticleController.class
 org\unomi\myspring\controller\UserController.class
 org\unomi\myspring\mapper\ArticleLikeMapper.class

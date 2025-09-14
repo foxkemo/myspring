@@ -30,6 +30,7 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE email=#{email}")
     User findByEmail(@Param("email") String email);
 
+
     // ===== 查询所有用户 =====
     @Select("SELECT * FROM user")
     List<User> findAll();
@@ -56,6 +57,9 @@ public interface UserMapper {
     @Update("UPDATE user SET activated=1 WHERE username=#{username} AND code=#{code}")
     int updateActivated(@Param("username") String username, @Param("code")String code);
 
+
+    @Update("UPDATE  user SET code=#{code} where email=#{email}")
+    boolean updateCode(@Param("email") String email, @Param("code")String code);
     // ===== 删除用户 =====
     @Delete("DELETE FROM user WHERE id=#{id}")
     int deleteById(@Param("id") Integer id);

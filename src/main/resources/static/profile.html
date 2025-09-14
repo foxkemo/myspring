@@ -2,102 +2,73 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>个人信息</title>
+    <title>用户资料</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
-
         .profile-card {
-            background: #fff;
+            background-color: #fff;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             width: 350px;
             text-align: center;
         }
-
         .profile-card img {
             width: 100px;
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 15px;
+            border: 2px solid #4CAF50;
         }
-
-        .profile-card h2 {
-            margin: 10px 0;
-        }
-
-        .profile-card p {
-            color: #666;
-            margin: 5px 0;
-        }
-
-        .profile-card .btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .profile-card .btn:hover {
-            background: #45a049;
-        }
+        .profile-card h2 { margin: 0 0 10px; font-size: 24px; }
+        .profile-card p { margin: 5px 0; color: #555; }
+        .profile-card .label { font-weight: bold; color: #333; }
     </style>
 </head>
 <body>
-<div class="profile-card" id="profile">
-    <img src="https://i.pravatar.cc/100" alt="头像">
-    <h2>张三</h2>
-    <p>邮箱: zhangsan@example.com</p>
-    <p>注册时间: 2024-01-10</p>
-    <p>账号状态: 正常</p>
-    <a href="/editprofile.html" class="btn">编辑资料</a>
+<div class="profile-card">
+    <img id="userImage" src="" alt="用户头像">
+    <h2 id="username">用户名</h2>
+    <p><span class="label">邮箱:</span> <span id="email"></span></p>
+    <p><span class="label">性别:</span> <span id="gender"></span></p>
+    <p><span class="label">注册时间:</span> <span id="registerTime"></span></p>
+    <p><span class="label">上次登录:</span> <span id="lastLogin"></span></p>
+    <p><span class="label">账号状态:</span> <span id="activated"></span></p>
 </div>
 
 <script>
-
-
-  fetch("/getUser")
-      .then(res=>{res.json()})
-      .then(data=>{
-            renderUser(data);
-      })
-
-
-        function renderUser(user) {
-
-                const profile = document.getElementById("profile");
-                if (!profile) return;
-
-                profile.querySelector("h2").textContent = user.name;
-                profile.querySelector("p:nth-of-type(1)").textContent = "邮箱: " + user.email;
-                profile.querySelector("p:nth-of-type(2)").textContent = "注册时间: " + user.registerDate;
-                profile.querySelector("p:nth-of-type(3)").textContent = "账号状态: " + user.status;
-
-                const img = profile.querySelector("img");
-                img.src = user.avatar;
-                img.alt = "头像";
-
-                const btn = profile.querySelector("a.btn");
-                btn.href = "/editprofile.html?id=" + user.id;
-
-
-        }
-
-
+    // 使用 fetch 从后端获取用户资料
+    fetch('/user/profile', {
+        method: 'GET',
+        credentials: 'include' // 携带 Cookie
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('获取用户信息失败');
+            return response.json();
+        })
+        .then(user => {
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('email').textContent = user.email;
+            document.getElementById('gender').textContent = user.gender === 1 ? '男' : '女';
+            document.getElementById('registerTime').textContent = new Date(user.register_time).toLocaleString();
+            document.getElementById('lastLogin').textContent = new Date(user.last_login).toLocaleString();
+            document.getElementById('activated').textContent = user.activated === 1 ? '已激活' : '未激活';
+            document.getElementById('userImage').src = user.user_image || 'https://via.placeholder.com/100';
+        })
+        .catch(err => {
+            console.error(err);
+            alert('无法加载用户信息');
+        });
 </script>
-
-
 </body>
 </html>

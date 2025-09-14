@@ -55,4 +55,41 @@ public class UserService {
 
 
     }
+
+
+    public User getUserById(Integer id) {
+      return   userMapper.findById(id);
+
+    }
+
+    public boolean sendCode(String email) {
+        Random random =new Random();
+        Integer code= 100000+random.nextInt(900000);
+       try{ mailService.sendSimpleMail(email,"Forget Account",code.toString());
+           userMapper.updateCode(email,code.toString());
+           return true;}
+       catch (Exception e){
+           return false;
+       }
+
+
+    }
+
+    public User resetPassword(String email, String password , String code) {
+       User user= userMapper.findByEmail(email);
+       if(user.getCode().equals(code)){
+           user.setPassword(password);
+           userMapper.updateUser(user);
+           return user;
+       }else {
+           return null;
+
+       }
+
+
+
+    }
+
+
+
 }

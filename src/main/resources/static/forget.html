@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重置密码</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .reset-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        .reset-card h2 { text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+        .btn { width: 100%; padding: 10px; background-color: #4CAF50; color: white; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background-color: #45a049; }
+        .info { color: red; margin-bottom: 10px; text-align: center; }
+        .send-btn { width: auto; padding: 5px 10px; margin-top: 5px; margin-left: 0; cursor:pointer; background:#2196F3; color:#fff; border:none; border-radius:5px;}
+        .send-btn:disabled { background: #ccc; cursor: not-allowed;}
+    </style>
+</head>
+<body>
+
+<div class="reset-card">
+    <h2>找回账号密码</h2>
+    <div class="info" id="info"></div>
+    <div class="form-group">
+
+
+        <label>邮箱:</label>
+        <input type="email" id="email">
+        <button class="send-btn" id="sendCodeBtn" onclick="sendCode()">发送验证码</button>
+    </div>
+    <div class="form-group">
+        <label>验证码:</label>
+        <input type="text" id="verifyCode">
+    </div>
+    <div class="form-group">
+        <label>新密码:</label>
+        <input type="password" id="newPassword">
+    </div>
+    <div class="form-group">
+        <label>确认新密码:</label>
+        <input type="password" id="confirmPassword">
+    </div>
+    <button class="btn" onclick="resetPassword()">提交</button>
+</div>
+
+<script>
+
+
+    function sendCode() {
+        const email = document.getElementById("email").value.trim();
+        const infoEl = document.getElementById("info");
+
+        if (!email) { infoEl.textContent = "请输入邮箱"; return; }
+
+        const user = users.find(u => u.email === email);
+        if (!user) { infoEl.textContent = "邮箱不存在"; return; }
+        fetch("/user/sendCode?email="+email)
+            .then(res=>{
+                res.text()
+
+            }).then(msg=>{
+            alert(msg)
+
+        })
+
+        const btn = document.getElementById("sendCodeBtn");
+        btn.disabled = false;
+        let countdown = 60;
+        const timer = setInterval(() => {
+            countdown--;
+            btn.textContent = `发送验证码 (${countdown}s)`;
+            if(countdown <= 0){
+                clearInterval(timer);
+                btn.disabled = false;
+                btn.textContent = "发送验证码";
+            }
+        },1000);
+    }
+
+    function resetPassword() {
+        const email = document.getElementById("email").value.trim();
+        const code = document.getElementById("verifyCode").value.trim();
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const infoEl = document.getElementById("info");
+
+
+        if (!email || !code || !newPassword || !confirmPassword) {
+            infoEl.style.color = "red";
+            infoEl.textContent = "请填写所有字段";
+            return;
+        }
+
+
+        if(newPassword !== confirmPassword){ infoEl.textContent = "两次密码不一致"; return; }
+
+        const formdata = {
+            email: email,
+            code: code,
+            password: newPassword
+        };
+
+        fetch("/user/resetPassword", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formdata)
+        })
+            .then(data => data.text()) // 返回 Promise
+            .then(msg => {
+                alert(msg);
+                window.location.href = "/profile.html"; // 正确跳转
+            })
+            .catch(err => {
+                console.error(err);
+                alert("请求失败");
+            });
+
+    }
+</script>
+
+</body>
+</html>
