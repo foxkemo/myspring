@@ -80,9 +80,10 @@
 <body>
 
 <div class="article-card" id="article">
-    <h2>文章标题示例</h2>
-    <img src=""></img>
-    <p>这里显示文章的内容。这是文章的正文部分，用于展示文章信息。</p>
+    <h1 id="title">文章标题示例</h1>
+    <div id="meta">met</div>
+    <img id="image" src=""></img>
+    <div id="content">这里显示文章的内容。这是文章的正文部分，用于展示文章信息。</div>
 </div>
 
 <div class="comment-section">
@@ -100,14 +101,36 @@
 
     <!-- 评论发表表单 -->
     <div class="comment-form">
-        <input type="text" id="username" placeholder="你的昵称">
+
         <textarea id="commentContent" rows="3" placeholder="写下你的评论..."></textarea>
         <button id="submitComment">发表评论</button>
     </div>
 </div>
 
 <script>
+    const meta=document.getElementById("meta");
+    const title=  document.getElementById("title");
+    const content= document.getElementById("content");
+    const image=document.getElementById("image");
+
     // 模拟评论数据
+    fetch("/article/renderArticle")
+        .then(resp=> { return resp.json()} ).then(
+
+        data=>{
+
+    title.textContent=data.title;
+    content.innerHTML=data.content;
+    image.setAttribute("src", data.image_url);
+            meta.innerHTML = `
+  <span>👤 作者ID: <strong>${data.author_id}</strong></span> &nbsp;|&nbsp;
+  <span>🕒 创建: <strong>${data.create_time}</strong></span> &nbsp;|&nbsp;
+  <span>✏️ 更新: <strong>${data.update_time}</strong></span> &nbsp;|&nbsp;
+  <span>👍 点赞: <strong>${data.like_count}</strong></span> &nbsp;|&nbsp;
+  <span>👁️ 浏览: <strong>${data.view_count}</strong></span>
+`;}
+    )
+
     let comments = [
         {username: "张三", content: "不错的文章！"},
         {username: "李四", content: "我学到了很多。"},

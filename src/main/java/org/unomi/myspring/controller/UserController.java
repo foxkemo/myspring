@@ -146,7 +146,7 @@ if(userService.sendCode(email)){
        }
        else {
 
-           return "Failed"+email+password+code;
+           return "Failed";
        }
 
 
