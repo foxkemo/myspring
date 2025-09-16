@@ -1,22 +1,24 @@
 package org.unomi.myspring.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.session.Session;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.unomi.myspring.entity.Article;
 import org.unomi.myspring.mapper.ArticleMapper;
+import org.unomi.myspring.service.ArticleService;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping("/article")
 public class ArticleController {
     @Autowired
  ArticleMapper articleMapper;
-
+@Autowired
+ArticleService articleService;
     public ArticleController(ArticleMapper articleMapper) {
         this.articleMapper = articleMapper;
     }
@@ -43,4 +45,19 @@ public class ArticleController {
             return article;
 
     }
+
+
+    @RequestMapping("/getArticleList")
+    public List<Article> getArticleList (@RequestParam int page, @RequestParam int size) {
+        int index=(page-1)*size;
+        return articleService.getList(index,size);
+
+
+
+    }
+
+
+
 }
+
+

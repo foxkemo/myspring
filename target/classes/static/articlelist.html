@@ -64,55 +64,70 @@
 
 <script>
     // 模拟文章数据
-    const articles = [
-        {title: "Spring 入门教程", content: "讲解 Spring 的 IoC 和 AOP"},
-        {title: "Java 基础语法", content: "变量、循环、面向对象"},
-        {title: "前端开发指南", content: "HTML + CSS + JS 学习路径"},
-        {title: "React 快速上手", content: "组件化开发与状态管理"},
-        {title: "数据库优化技巧", content: "索引、事务、锁机制"},
-        {title: "算法入门", content: "排序、查找、图论基础"},
-        {title: "Linux 常用命令", content: "文件操作与进程管理"},
-        {title: "Docker 教程", content: "容器与微服务"},
-        {title: "Vue3 入门", content: "组合式 API 与响应式原理"},
-        {title: "操作系统原理", content: "进程、线程、内存管理"},
-        {title: "计算机网络", content: "TCP/IP、HTTP、DNS"},
-        {title: "Spring Boot 实战", content: "快速开发微服务应用"}
-    ];
+    // const articles = [
+    //     {title: "Spring 入门教程", content: "讲解 Spring 的 IoC 和 AOP"},
+    //     {title: "Java 基础语法", content: "变量、循环、面向对象"},
+    //     {title: "前端开发指南", content: "HTML + CSS + JS 学习路径"},
+    //     {title: "React 快速上手", content: "组件化开发与状态管理"},
+    //     {title: "数据库优化技巧", content: "索引、事务、锁机制"},
+    //     {title: "算法入门", content: "排序、查找、图论基础"},
+    //     {title: "Linux 常用命令", content: "文件操作与进程管理"},
+    //     {title: "Docker 教程", content: "容器与微服务"},
+    //     {title: "Vue3 入门", content: "组合式 API 与响应式原理"},
+    //     {title: "操作系统原理", content: "进程、线程、内存管理"},
+    //     {title: "计算机网络", content: "TCP/IP、HTTP、DNS"},
+    //     {title: "Spring Boot 实战", content: "快速开发微服务应用"}
+    // ];
+
 
     const pageSize = 5;  // 每页文章数
     let currentPage = 1;
-    let filteredArticles = articles;
+    let articles =[];
+
+
+    async function getArticleList(page,size){
+
+       await fetch("/article/getArticleList?page="+page+"&size="+size)
+            .then(resp=>resp.json())
+            .then(data=>{
+                articles=data;
+                console.log("后端返回的数据:", data, Array.isArray(data));
+            })
+
+
+    }
+
+
 
     const articleList = document.getElementById("articleList");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const pageInfo = document.getElementById("pageInfo");
-    const searchInput = document.getElementById("searchInput");
+    // const searchInput = document.getElementById("searchInput");
 
     // 渲染文章
-    function renderArticles() {
-        articleList.innerHTML = "";
-        const start = (currentPage - 1) * pageSize;
-        const end = start + pageSize;
-        const pageArticles = filteredArticles.slice(start, end);
+   async function renderArticles() {
 
-        pageArticles.forEach((article, index) => {
+        articleList.innerHTML="";
+        await getArticleList(currentPage,pageSize);
+        articles.forEach(article => {
             const div = document.createElement("div");
             div.className = "article-card";
 
-            // 假设每篇文章链接为 /article.html?id=编号
+
             div.innerHTML = `
-      <h3><a href="/article.html?id=${articles.indexOf(article)}">${article.title}</a></h3>
-      <p>${article.content}</p>
+      <h3><a href="/article/getArticle?id=${article.id}">${article.title}</a></h3>
+      <p>${article.author_id}</p>
     `;
             articleList.appendChild(div);
         });
 
         // 更新分页信息
-        pageInfo.textContent = `第 ${currentPage} 页 / 共 ${Math.ceil(filteredArticles.length / pageSize)} 页`;
+        pageInfo.textContent = `第 ${currentPage} 页 / `;
 
         prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === Math.ceil(filteredArticles.length / pageSize);
+        nextBtn.disabled = articles.length!==pageSize;
+
     }
 
     // 分页按钮
@@ -124,22 +139,22 @@
     });
 
     nextBtn.addEventListener("click", () => {
-        if (currentPage < Math.ceil(filteredArticles.length / pageSize)) {
+        if (articles.length ===pageSize) {
             currentPage++;
             renderArticles();
         }
     });
-
-    // 搜索功能
-    searchInput.addEventListener("input", () => {
-        const keyword = searchInput.value.toLowerCase();
-        filteredArticles = articles.filter(a =>
-            a.title.toLowerCase().includes(keyword) ||
-            a.content.toLowerCase().includes(keyword)
-        );
-        currentPage = 1; // 重置到第一页
-        renderArticles();
-    });
+    //
+    // // 搜索功能
+    // searchInput.addEventListener("input", () => {
+    //     const keyword = searchInput.value.toLowerCase();
+    //     articles = articles.filter(a =>
+    //         a.title.toLowerCase().includes(keyword) ||
+    //         a.content.toLowerCase().includes(keyword)
+    //     );
+    //     currentPage = 1; // 重置到第一页
+    //     renderArticles();
+    // });
 
     // 初始化渲染
     renderArticles();

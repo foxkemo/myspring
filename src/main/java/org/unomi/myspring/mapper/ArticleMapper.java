@@ -1,6 +1,7 @@
 package org.unomi.myspring.mapper;
 import org.apache.ibatis.annotations.*;
 import org.unomi.myspring.entity.Article;
+
 import java.util.List;
 
     @Mapper
@@ -21,8 +22,8 @@ import java.util.List;
         List<Article> findByAuthorId(@Param("authorId") Integer authorId);
 
         // ===== 查询所有文章 =====
-        @Select("SELECT * FROM article ORDER BY create_time DESC")
-        List<Article> findAll();
+        @Select("SELECT id,title,author_id,cover_url FROM article ORDER BY create_time DESC limit #{index},#{size}")
+        List<Article> findIntoList(@Param("index") int index, @Param("size") int size);
 
         // ===== 更新文章内容和封面 =====
         @Update("UPDATE article SET title=#{title}, content=#{content}, cover_url=#{coverUrl}, update_time=NOW() " +
