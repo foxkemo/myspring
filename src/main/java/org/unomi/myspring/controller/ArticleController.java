@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.unomi.myspring.entity.Article;
+import org.unomi.myspring.mapper.ArticleLikeMapper;
 import org.unomi.myspring.mapper.ArticleMapper;
 import org.unomi.myspring.service.ArticleService;
 
@@ -19,6 +20,9 @@ public class ArticleController {
  ArticleMapper articleMapper;
 @Autowired
 ArticleService articleService;
+    @Autowired
+    private ArticleLikeMapper articleLikeMapper;
+
     public ArticleController(ArticleMapper articleMapper) {
         this.articleMapper = articleMapper;
     }
@@ -28,7 +32,9 @@ ArticleService articleService;
        Article article= articleMapper.findById(id) ;
         if ( article !=null) {
 
+            articleMapper.updateViewCountIncrease(id);
             session.setAttribute("article", id);
+
             return article;
 
         } else {
@@ -52,6 +58,27 @@ ArticleService articleService;
         int index=(page-1)*size;
         return articleService.getList(index,size,str);
 
+
+
+    }
+
+    @RequestMapping("/articleLike")
+    short articleLike(@RequestParam int id ,@RequestParam int lcase,HttpSession session) {
+        Integer uid=(Integer)session.getAttribute("user");
+//        if(session.getAttribute("article")==null) {return 3;}
+        if(uid==null) {return 0;}
+
+
+        switch (lcase){
+            case 1:
+                return articleService.addLike(id,uid);
+            case 0:
+                return articleService.removeLike(id,uid);
+            case 2:
+                return (articleLikeMapper.isLiked(id,uid) !=0? (short) 1:(short) 0);
+            default:
+                return -1;
+        }
 
 
     }

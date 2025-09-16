@@ -10,6 +10,29 @@
             background: #f7f7f7;
         }
 
+
+
+        .likeBtn {
+            margin: 0 5px;
+            padding: 6px 12px;
+            border: none;
+            background: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cancelLike{
+            margin: 0 5px;
+            padding: 6px 12px;
+            border: none;
+
+            color: #fff;
+            border-radius: 4px;
+
+            background: #ccc;
+            cursor: pointer;
+        }
         .article-card {
             background: #fff;
             padding: 20px;
@@ -81,10 +104,14 @@
 
 <div class="article-card" id="article">
     <h1 id="title">文章标题示例</h1>
-    <div id="meta">met</div>
-    <img id="image" src=""></img>
+    <div id="meta">meta-info</div>
+    <button class="likeBtn" id="likeBtn"> ❤️喜爱文章 </button>
+    <img id="image" src="">cover</img>
     <div id="content">这里显示文章的内容。这是文章的正文部分，用于展示文章信息。</div>
 </div>
+
+
+
 
 <div class="comment-section">
     <h3>评论</h3>
@@ -108,29 +135,22 @@
 </div>
 
 <script>
+
+    //article
     const meta=document.getElementById("meta");
     const title=  document.getElementById("title");
     const content= document.getElementById("content");
     const image=document.getElementById("image");
+    const likeBtn=document.getElementById("likeBtn");
+    let article={};
 
-    // 模拟评论数据
-    fetch("/article/renderArticle")
-        .then(resp=> { return resp.json()} ).then(
-
-        data=>{
-
-    title.textContent=data.title;
-    content.innerHTML=data.content;
-    image.setAttribute("src", data.cover_url);
-            meta.innerHTML = `
-  <span>👤 作者ID: <strong>${data.author_id}</strong></span> &nbsp;|&nbsp;
-  <span>🕒 创建: <strong>${data.create_time}</strong></span> &nbsp;|&nbsp;
-  <span>✏️ 更新: <strong>${data.update_time}</strong></span> &nbsp;|&nbsp;
-  <span>👍 点赞: <strong>${data.like_count}</strong></span> &nbsp;|&nbsp;
-  <span>👁️ 浏览: <strong>${data.view_count}</strong></span>
-`;}
-    )
-
+    //comment
+    const pageSize = 3; // 每页显示评论数
+    let currentCommentPage = 1;
+    const commentList = document.getElementById("commentList");
+    const prevComment = document.getElementById("prevComment");
+    const nextComment = document.getElementById("nextComment");
+    const commentPageInfo = document.getElementById("commentPageInfo");
     let comments = [
         {username: "张三", content: "不错的文章！"},
         {username: "李四", content: "我学到了很多。"},
@@ -142,13 +162,55 @@
         {username: "小赵", content: "有帮助！"},
     ];
 
-    const pageSize = 3; // 每页显示评论数
-    let currentCommentPage = 1;
 
-    const commentList = document.getElementById("commentList");
-    const prevComment = document.getElementById("prevComment");
-    const nextComment = document.getElementById("nextComment");
-    const commentPageInfo = document.getElementById("commentPageInfo");
+
+
+    async function renderLike(){
+        await fetch("/article/articleLike?lcase=2&id="+article.id)
+            .then(resp=>resp.text())
+            .then(flag=>{
+                if(flag==="1"){
+
+                    likeBtn.className="cancelLike";
+                    likeBtn.textContent="💔取消喜爱"
+                }
+
+
+
+            })
+
+
+    }
+    async function renderArticle() {
+    await fetch("/article/renderArticle")
+        .then(
+
+            resp => {
+
+                if (!resp.ok) throw new error;
+
+            return resp.json()
+        }).then(
+        data => {
+            article = data;
+            title.textContent = data.title;
+            content.innerHTML = data.content;
+            image.setAttribute("src", data.cover_url);
+            meta.innerHTML = `
+  <span>👤 作者ID: <strong>${data.author_id}</strong></span> &nbsp;|&nbsp;
+  <span>🕒 创建: <strong>${data.create_time}</strong></span> &nbsp;|&nbsp;
+  <span>✏️ 更新: <strong>${data.update_time}</strong></span> &nbsp;|&nbsp;
+  <span>👍 点赞: <strong>${data.like_count}</strong></span> &nbsp;|&nbsp;
+  <span>👁️ 浏览: <strong>${data.view_count}</strong></span>
+`;
+        }
+
+    ).catch(err=>{alert(err)})
+
+    await renderLike();
+}
+
+
 
     function renderComments() {
         commentList.innerHTML = "";
@@ -168,6 +230,7 @@
         nextComment.disabled = currentCommentPage === Math.ceil(comments.length / pageSize);
     }
 
+
     prevComment.addEventListener("click", () => {
         if (currentCommentPage > 1) {
             currentCommentPage--;
@@ -181,6 +244,74 @@
             renderComments();
         }
     });
+
+
+    likeBtn.addEventListener("click",()=>{
+        if (likeBtn.className==="likeBtn"){
+            fetch("/article/articleLike?lcase=1&id="+article.id)
+                .then(resp=>resp.text())
+                .then(flag=>{
+                    switch (flag){
+                        case "1":
+                            alert("喜爱成功");
+                            break;
+                        case "2":
+                            alert("已经喜爱");
+                            break;
+                        case "3":
+
+                            alert("请选择一篇文章");
+                            window.location.href("/articlelist.html");
+                            break;
+                        case "0":
+                            alert("出错了，可能登录过期，请检查登录状态");
+                            window.location.href("/profile.html");
+                            break;
+                        default :
+                            alert("意料之外的错误，联系开发者");
+                            window.location.href("/article.html");
+                    }
+                })
+            likeBtn.className="cancelLike";
+            likeBtn.textContent="💔取消喜爱";
+        }else{
+            fetch("/article/articleLike?lcase=0&id="+article.id)
+                .then(resp=>resp.text())
+                .then(flag=> {
+                    switch (flag) {
+                        case "1":
+                            alert("取消喜爱成功");
+                            break;
+                        case "2":
+                            alert("已经取消喜爱");
+                            break;
+
+                        case "3":
+
+                            alert("请选择一篇文章");
+                            window.location.href("/articlelist.html");
+                            break;
+                        case "0":
+                            alert("出错了，可能登录过期，请检查登录状态");
+                            window.location.href("/profile.html");
+                            break;
+                        default :
+                            alert("意料之外的错误，联系开发者");
+                            window.location.href("/article.html");
+                    }
+                }
+                )
+            likeBtn.className="likeBtn";
+            likeBtn.textContent="❤️喜爱文章";
+
+        }
+
+
+
+
+
+    })
+
 
     // 提交评论
     document.getElementById("submitComment").addEventListener("click", () => {
@@ -201,6 +332,7 @@
     });
 
     // 初始化
+    renderArticle();
     renderComments();
 </script>
 </body>

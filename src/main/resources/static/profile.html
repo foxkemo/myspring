@@ -56,7 +56,14 @@
             if (!response.ok) throw new Error('获取用户信息失败');
             return response.json();
         })
-        .then(user => {
+        .then(
+
+
+
+            user => {
+                if(user==={}) throw new Error("登录过期或者未登录");
+
+
             document.getElementById('username').textContent = user.username;
             document.getElementById('email').textContent = user.email;
             document.getElementById('gender').textContent = user.gender === 1 ? '男' : '女';
@@ -64,10 +71,11 @@
             document.getElementById('lastLogin').textContent = new Date(user.last_login).toLocaleString();
             document.getElementById('activated').textContent = user.activated === 1 ? '已激活' : '未激活';
             document.getElementById('userImage').src = user.user_image || 'https://via.placeholder.com/100';
+
         })
         .catch(err => {
             console.error(err);
-            alert('无法加载用户信息');
+            alert(err);
         });
 </script>
 </body>

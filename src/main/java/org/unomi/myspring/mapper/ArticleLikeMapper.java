@@ -9,28 +9,25 @@ import java.util.List;
 public interface ArticleLikeMapper {
 
     // ===== 插入点赞 =====
-    @Insert("INSERT INTO user_like(article_id, user_id, create_time) " +
-            "VALUES(#{articleId}, #{userId}, NOW())")
+    @Insert("INSERT INTO article_like (article_id, user_id, create_time) " +
+            "VALUES(#{article_id}, #{user_id}, NOW())")
     @Options(useGeneratedKeys = true, keyProperty = "id") // 回填自增ID
     int insertLike(ArticleLike Articlelike);
 
     // ===== 取消点赞 =====
-    @Delete("DELETE FROM user_like WHERE article_id=#{articleId} AND user_id=#{userId}")
-    int deleteLike(@Param("articleId") Integer articleId, @Param("userId") Integer userId);
+    @Delete("DELETE FROM article_like  WHERE article_id=#{article_id} AND user_id=#{user_id}")
+    int deleteLike(@Param("article_id") Integer article_id, @Param("user_id") Integer user_id);
 
     // ===== 查询用户是否已点赞某篇文章 =====
-    @Select("SELECT * FROM user_like WHERE article_id=#{articleId} AND user_id=#{userId}")
-    ArticleLike findByUserAndArticle(@Param("articleId") Integer articleId, @Param("userId") Integer userId);
+    @Select("SELECT * FROM article_like  WHERE article_id=#{article_id} AND user_id=#{user_id}")
+    ArticleLike findByUserAndArticle(@Param("article_id") Integer article_id, @Param("user_id") Integer user_id);
 
-    // ===== 查询某篇文章的所有点赞 =====
-    @Select("SELECT * FROM user_like WHERE article_id=#{articleId}")
-    List<ArticleLike> findByArticleId(@Param("articleId") Integer articleId);
-
-    // ===== 查询某个用户所有点赞记录 =====
-    @Select("SELECT * FROM user_like WHERE user_id=#{userId}")
-    List<ArticleLike> findByUserId(@Param("userId") Integer userId);
 
     // ===== 统计某篇文章的点赞数 =====
-    @Select("SELECT COUNT(*) FROM user_like WHERE article_id=#{articleId}")
-    int countByArticleId(@Param("articleId") Integer articleId);
+    @Select("SELECT COUNT(*) FROM article_like  WHERE article_id=#{article_id}")
+    int countByArticle(@Param("article_id") Integer article_id);
+
+    @Select("SELECT COUNT(*) FROM article_like WHERE article_id=#{article_id} AND user_id=#{user_id} ")
+    int isLiked(@Param("article_id") Integer article_id, @Param("user_id") Integer user_id);
+
 }

@@ -33,12 +33,16 @@ import java.util.List;
         int updateArticle(Article article);
 
         // ===== 更新文章浏览量 =====
-        @Update("UPDATE article SET view_count=#{viewCount} WHERE id=#{id}")
-        int updateViewCount(@Param("id") Integer id, @Param("viewCount") Integer viewCount);
+        @Update("UPDATE article SET view_count=view_count+1 WHERE id=#{id}")
+        int updateViewCountIncrease(@Param("id") Integer id);
 
         // ===== 更新文章点赞数 =====
-        @Update("UPDATE article SET like_count=#{likeCount} WHERE id=#{id}")
-        int updateLikeCount(@Param("id") Integer id, @Param("likeCount") Integer likeCount);
+        @Update("UPDATE article SET like_count= like_count+1 WHERE id=#{id}")
+        int updateLikeCountIncrease(@Param("id") Integer id);
+        @Update("UPDATE article SET like_count= like_count-1 WHERE id=#{id}")
+        int updateLikeCountDecrease(@Param("id") Integer id);
+
+
 
         // ===== 删除文章 =====
         @Delete("DELETE FROM article WHERE id=#{id}")
