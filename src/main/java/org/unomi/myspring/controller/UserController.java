@@ -73,19 +73,27 @@ public class UserController {
 
     @RequestMapping("/register")
     public String register(@RequestParam String username ,@RequestParam String password,@RequestParam String email) {
-        User user=userService.register(username, password, email) ;
-    if(user!=null){
-        ObjectMapper om=new ObjectMapper();
-       om.registerModule(new JavaTimeModule());
-        try {
-            return om.writeValueAsString(user);
-        } catch (JsonProcessingException e) {
-            return e.getMessage();
-        }
+        String msg=userService.register(username, password, email) ;
+        String res;
+        if(msg.equals("success")) {
+             res = "<script>"
+                    + "alert('" +
+                    msg +
+                    "\\n点击跳转至激活页面" +
+                    "');" +
+                    "window.location.href='/activate.html'" + "</script>";
+        }else{
+            res = "<script>"
+                    + "alert('" +
+                    msg +
+                    "\\n点击跳转至注册页面" +
+                    "');" +
+                    "window.location.href='/register.html'" + "</script>";
 
-    }else {
-        return "Failed";
-    }}
+
+        }
+        return res;
+    }
 
 @RequestMapping("/profile")
 public User profile(HttpSession session) {

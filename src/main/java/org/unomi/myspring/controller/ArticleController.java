@@ -48,9 +48,9 @@ ArticleService articleService;
 
 
     @RequestMapping("/getArticleList")
-    public List<Article> getArticleList (@RequestParam int page, @RequestParam int size) {
+    public List<Article> getArticleList (@RequestParam int page, @RequestParam int size ,@RequestParam String str) {
         int index=(page-1)*size;
-        return articleService.getList(index,size);
+        return articleService.getList(index,size,str);
 
 
 

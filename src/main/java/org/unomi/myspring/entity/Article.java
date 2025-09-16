@@ -17,7 +17,7 @@ public class Article {
     private Integer like_count;       // 点赞数
     private LocalDateTime create_time;   // 发布时间
     private LocalDateTime update_time;    // 更新时间
-
+    private String author_name ="not exist";
 
 
 }

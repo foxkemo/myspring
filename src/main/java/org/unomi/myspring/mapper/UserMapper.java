@@ -30,7 +30,11 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE email=#{email}")
     User findByEmail(@Param("email") String email);
 
+    @Select("SELECT username FROM user WHERE id=#{id}")
+    String findUsernameById(@Param("id") Integer id);
 
+    @Select("select count(*) from user where username=#{username} or email=#{email}")
+    Integer isExist(@Param("username") String username,@Param("email") String email  );
     // ===== 查询所有用户 =====
     @Select("SELECT * FROM user")
     List<User> findAll();

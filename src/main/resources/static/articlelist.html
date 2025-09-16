@@ -79,15 +79,20 @@
     //     {title: "Spring Boot 实战", content: "快速开发微服务应用"}
     // ];
 
+    const articleList = document.getElementById("articleList");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const pageInfo = document.getElementById("pageInfo");
+    const searchInput = document.getElementById("searchInput");
 
     const pageSize = 5;  // 每页文章数
     let currentPage = 1;
     let articles =[];
-
+    let searchStr='';
 
     async function getArticleList(page,size){
-
-       await fetch("/article/getArticleList?page="+page+"&size="+size)
+        searchStr=searchInput.value;
+       await fetch("/article/getArticleList?page="+page+"&size="+size+"&str="+searchStr)
             .then(resp=>resp.json())
             .then(data=>{
                 articles=data;
@@ -99,11 +104,6 @@
 
 
 
-    const articleList = document.getElementById("articleList");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const pageInfo = document.getElementById("pageInfo");
-    // const searchInput = document.getElementById("searchInput");
 
     // 渲染文章
    async function renderArticles() {
@@ -117,7 +117,7 @@
 
             div.innerHTML = `
       <h3><a href="/article/getArticle?id=${article.id}">${article.title}</a></h3>
-      <p>${article.author_id}</p>
+      <p>${article.author_name}</p>
     `;
             articleList.appendChild(div);
         });
@@ -144,17 +144,14 @@
             renderArticles();
         }
     });
-    //
-    // // 搜索功能
-    // searchInput.addEventListener("input", () => {
-    //     const keyword = searchInput.value.toLowerCase();
-    //     articles = articles.filter(a =>
-    //         a.title.toLowerCase().includes(keyword) ||
-    //         a.content.toLowerCase().includes(keyword)
-    //     );
-    //     currentPage = 1; // 重置到第一页
-    //     renderArticles();
-    // });
+
+    // 搜索功能
+    searchInput.addEventListener("input", () => {
+
+
+        currentPage = 1; // 重置到第一页
+        renderArticles();
+    });
 
     // 初始化渲染
     renderArticles();

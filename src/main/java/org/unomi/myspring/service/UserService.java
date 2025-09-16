@@ -1,10 +1,12 @@
 package org.unomi.myspring.service;
 
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.unomi.myspring.entity.User;
 import org.unomi.myspring.mapper.UserMapper;
 
+import java.sql.SQLException;
 import java.util.Random;
 
 @Service
@@ -21,8 +23,14 @@ public class UserService {
         return userMapper.getUserByUsername(username, password);
     }
 
-    public User register(String username, String password, String email) {
+    public String register(String username, String password, String email) {
 
+
+
+        if (userMapper.isExist(username,email)!=0) {
+
+            return "username or email already exists";
+        }
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
@@ -32,12 +40,23 @@ public class UserService {
         Random random =new Random();
         Integer code= 100000+random.nextInt(900000);
         user.setCode(code.toString());
-        if (userMapper.insertUser(user) != 0) {
+        Integer flag = 0;
+        try {
+
+            flag=userMapper.insertUser(user);
+
+        }
+        catch (Exception e) {
+
+            return e.getMessage();
+        }
+
+        if (flag != 0) {
             mailService.sendSimpleMail(user.getEmail(),"test",user.getCode());
-            return userMapper.getUserByUsername(username, password);
+            return "success";
 
         } else {
-            return null;
+            return "unknown error";
         }
 
     }

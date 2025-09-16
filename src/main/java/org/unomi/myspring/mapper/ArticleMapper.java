@@ -17,6 +17,8 @@ import java.util.List;
         @Select("SELECT * FROM article WHERE id=#{id}")
         Article findById(@Param("id") Integer id);
 
+
+
         // ===== 查询某个作者的所有文章 =====
         @Select("SELECT * FROM article WHERE author_id=#{authorId} ORDER BY create_time DESC")
         List<Article> findByAuthorId(@Param("authorId") Integer authorId);
@@ -43,8 +45,8 @@ import java.util.List;
         int deleteById(@Param("id") Integer id);
 
         // ===== 搜索文章（标题模糊搜索） =====
-        @Select("SELECT * FROM article WHERE title LIKE CONCAT('%', #{keyword}, '%') ORDER BY create_time DESC")
-        List<Article> searchByTitle(@Param("keyword") String keyword);
+        @Select("select title,id,author_id,cover_url FROM article WHERE title like concat('%',#{str},'%' ) order by create_time desc limit #{index},#{size} ")
+        List<Article> findByTitle(@Param("index") int index, @Param("size") int size,@Param("str") String str);
 
 
     }
