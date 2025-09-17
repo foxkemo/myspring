@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.*;
 import org.unomi.myspring.entity.User;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface UserMapper {
@@ -38,6 +39,11 @@ public interface UserMapper {
     // ===== 查询所有用户 =====
     @Select("SELECT * FROM user")
     List<User> findAll();
+
+    List<User> selectAll();
+
+
+
 //
 //    // ===== 条件查询（可分页） =====
 //    @Select("SELECT * FROM user WHERE gender=#{gender} LIMIT #{offset}, #{limit}")
@@ -65,11 +71,18 @@ public interface UserMapper {
     @Update("UPDATE  user SET code=#{code} where email=#{email}")
     boolean updateCode(@Param("email") String email, @Param("code")String code);
     // ===== 删除用户 =====
-    @Delete("DELETE FROM user WHERE id=#{id}")
-    int deleteById(@Param("id") Integer id);
+//    @Delete("DELETE FROM user WHERE id=#{id}")
+//    int deleteById(@Param("id") Integer id);
+
+    void deleteById(@Param("ids") Set<Integer> id);
+
+
 
     // ===== 更新最后登录时间 =====
     @Update("UPDATE user SET last_login=NOW() WHERE id=#{id}")
     int updateLastLogin(@Param("id") Integer id);
+
+
+    User selectById(@Param("id") int id);
 }
 
