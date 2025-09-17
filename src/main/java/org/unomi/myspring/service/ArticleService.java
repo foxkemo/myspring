@@ -1,13 +1,19 @@
 package org.unomi.myspring.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.unomi.myspring.entity.Article;
 import org.unomi.myspring.entity.ArticleLike;
 import org.unomi.myspring.mapper.ArticleLikeMapper;
 import org.unomi.myspring.mapper.ArticleMapper;
+import org.unomi.myspring.mapper.CommentMapper;
 import org.unomi.myspring.mapper.UserMapper;
+import org.unomi.myspring.tool.Tool;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -18,6 +24,10 @@ public class ArticleService {
     private UserMapper userMapper;
     @Autowired
     private ArticleLikeMapper articleLikeMapper;
+    @Autowired
+    private CommentMapper commentMapper;
+    @Autowired
+    private Tool tool;
 
     public List<Article> getList(int index , int size,String str){
 
@@ -59,6 +69,23 @@ public class ArticleService {
           articleLikeMapper.deleteLike(article_id,uid);
           articleMapper.updateLikeCountDecrease(article_id);
             return 1;
+        }
+
+
+    }
+
+
+    public String getCommentList(int id, int page,int size){
+
+                int index=(page-1)*size;
+               ObjectMapper om = tool.getObjectMapper();
+
+
+        try {
+            return  om.writeValueAsString(  commentMapper.findByArticleId(id,index,size));
+        } catch (JsonProcessingException e) {
+
+           return  e.getMessage();
         }
 
 

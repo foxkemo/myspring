@@ -1,7 +1,6 @@
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/MyspringApplication.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/config/SessionConfig.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/controller/ArticleController.java
-/Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/controller/CommentController.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/controller/UserController.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/entity/Article.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/entity/ArticleLike.java
@@ -16,3 +15,4 @@
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/service/ArticleService.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/service/MailService.java
 /Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/service/UserService.java
+/Users/unomi/IdeaProjects/myspring/src/main/java/org/unomi/myspring/tool/Tool.java

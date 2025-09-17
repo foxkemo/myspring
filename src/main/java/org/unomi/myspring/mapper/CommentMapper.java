@@ -10,7 +10,7 @@ public interface CommentMapper {
 
         // ===== 插入评论 =====
         @Insert("INSERT INTO comment(article_id, user_id, content, parent_id, create_time, like_count) " +
-                "VALUES(#{articleId}, #{userId}, #{content}, #{parentId}, NOW(), #{likeCount})")
+                "VALUES(#{article_id}, #{user_id}, #{content}, #{parent_id}, NOW(), #{like_count})")
         @Options(useGeneratedKeys = true, keyProperty = "id") // 回填自增ID
         int insertComment(Comment comment);
 
@@ -19,8 +19,8 @@ public interface CommentMapper {
         Comment findById(@Param("id") Integer id);
 
         // ===== 查询某篇文章的所有评论 =====
-        @Select("SELECT * FROM comment WHERE article_id=#{articleId} ORDER BY create_time ASC")
-        List<Comment> findByArticleId(@Param("articleId") Integer articleId);
+        @Select("SELECT * FROM comment WHERE article_id=#{articleId}  ORDER BY create_time ASC LIMIT #{index},#{size}")
+        List<Comment> findByArticleId(@Param("articleId") Integer articleId ,@Param("index") int index,@Param("size") int size);
 
         // ===== 查询某个用户的所有评论 =====
         @Select("SELECT * FROM comment WHERE user_id=#{userId} ORDER BY create_time DESC")
