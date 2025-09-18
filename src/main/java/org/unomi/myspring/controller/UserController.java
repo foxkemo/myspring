@@ -4,6 +4,7 @@ package org.unomi.myspring.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,18 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private MailService mailService;
+
+
+    @RequestMapping("/jwtLogin")
+    public String jwtLogin(HttpServletRequest request) {
+
+//todo
+        return "test";
+
+    }
+
+
+
 
     @RequestMapping("/login")
     public String login(@RequestParam(required = false) String username,
@@ -94,6 +107,8 @@ public class UserController {
         }
         return res;
     }
+
+
 
 @RequestMapping("/profile")
 public User profile(HttpSession session) {
