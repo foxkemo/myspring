@@ -1,6 +1,6 @@
-org/unomi/myspring/service/ArticleService.class
-org/unomi/myspring/MyspringApplication.class
-org/unomi/myspring/tool/Tool.class
-org/unomi/myspring/service/MailService.class
-org/unomi/myspring/service/UserService.class
-org/unomi/myspring/controller/UserController.class
+org\unomi\myspring\service\MailService.class
+org\unomi\myspring\MyspringApplication.class
+org\unomi\myspring\service\ArticleService.class
+org\unomi\myspring\tool\Tool.class
+org\unomi\myspring\controller\UserController.class
+org\unomi\myspring\service\UserService.class

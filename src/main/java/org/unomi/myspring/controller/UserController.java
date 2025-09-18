@@ -4,6 +4,9 @@ package org.unomi.myspring.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,12 @@ import org.unomi.myspring.mapper.UserMapper;
 import org.unomi.myspring.service.MailService;
 import org.unomi.myspring.service.UserService;
 
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+
+import static io.jsonwebtoken.Jwts.SIG.HS256;
 
 @RequestMapping("/user")
 @RestController
@@ -35,8 +43,16 @@ public class UserController {
     @RequestMapping("/jwtLogin")
     public String jwtLogin(HttpServletRequest request) {
 
-//todo
-        return "test";
+        Map<String,String> map = new HashMap<>();
+        map.put("username",request.getParameter("username"));
+     SecretKey key= Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        String jwt= Jwts.builder().signWith(SignatureAlgorithm.HS256,key).setClaims(map).setExpiration(new Date(System.currentTimeMillis()+3600*1000)).compact();
+
+
+
+
+
+        return jwt;
 
     }
 

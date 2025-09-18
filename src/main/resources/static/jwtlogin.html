@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登录主页</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 300px;
+            align-items: center;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-box form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+        }
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login-box button:hover {
+            background: #45a049;
+        }
+
+        .login-box .footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-box .footer a {
+            text-decoration: none;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <h2>用户登录</h2>
+    <form   id="form"  action="/user/login" method="post" >
+        <input type="text" name="username" placeholder="用户名" required>
+
+        <button id="btn" type="button">登录</button>
+    </form>
+    <div class="footer">
+        <a href="/register.html">注册账号</a> | <a href="/forget.html">忘记密码?</a>
+    </div>
+</div>
+
+<script>
+   const btn= document.getElementById("btn");
+   const form=document.getElementById("form")
+   const children=form.children;
+   const username=children.item(0);
+
+
+
+   btn.addEventListener("click", () => {
+       fetch("/user/jwtLogin", {
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+               username: username.value,
+
+           })
+       })
+           .then(res => res.json()) // 假设后端返回 JSON
+           .then(data => {
+               console.log("登录成功:", data);
+               // 比如保存 JWT
+               localStorage.setItem("token", data.token);
+           })
+           .catch(err => console.error("请求出错:", err));
+   });
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+
+
+</html>
