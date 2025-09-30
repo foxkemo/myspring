@@ -54,7 +54,7 @@ public class ArticleService {
 
           articleLikeMapper.insertLike(articleLike);
           articleMapper.updateLikeCountIncrease(article_id);
-          return 1;
+          return 1 ;
         }
 
 
